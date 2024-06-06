@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
-import "package:mangadex_library/mangadex_library.dart";
+import "package:manga_reader_app/components/button_component.dart";
+import "package:percent_indicator/linear_percent_indicator.dart";
 
 void main() {
   runApp(const MyApp());
@@ -11,6 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: HomePage(),
     );
   }
@@ -21,44 +23,125 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const clientId =
-        'personal-client-a6a5fe43-df61-48a9-9084-11d7379a8ced-6bcb7bb9';
-    const clientSecret = 'zbwHSvb3jCwetCVXYzNswdldsCjlJh9T';
+    final screenSize = MediaQuery.of(context).size;
 
-    final client =
-        MangadexPersonalClient(clientId: clientId, clientSecret: clientSecret);
-
-    var username = 'AbisheikRaj';
-    var password = 'ItsChennai@2313';
-
-    return Scaffold(
-      body: Center(
-          child: GestureDetector(
-              onTap: () async {
-                try {
-                  await client.login(username, password);
-                  print("Successfully logged in!");
-                  var searchData = await client.search(query: 'death note');
-
-                  var mangaID = searchData.data![0].id;
-                  print(mangaID);
-                  print(await client.getCoverArt([mangaID.toString()]));
-                } catch (e) {
-                  print("Error logging in");
-                }
-              },
-              child: const Column(
-                children: [
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Text("yes"),
-                  Image(
-                    image: NetworkImage(
-                        "https://uploads.mangadex.org/covers/75ee72ab-c6bf-4b87-badd-de839156934c/c104b84e-357a-4fbf-8c8c-695beb674e59.jpg"),
-                  ),
-                ],
-              ))),
-    );
+    return SafeArea(
+        child: Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: const Text(
+          "NOW",
+          style:
+              TextStyle(color: Colors.white, fontFamily: "go3", fontSize: 25),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.search,
+                color: Colors.white,
+              ))
+        ],
+      ),
+      backgroundColor: Colors.black,
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Container(
+                width: double.infinity,
+                height: 200,
+                child: Row(
+                  children: [
+                    Container(
+                      height: double.infinity,
+                      width: screenSize.width * 0.4,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          image: const DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(
+                                  "https://imgs.search.brave.com/NtEg4Kwxec3NnbcaKqP5UpxCxevRHyMymoZk3emiusQ/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9pLmV0/c3lzdGF0aWMuY29t/LzM3MjY4NzM3L3Iv/aWwvNjhlNTZmLzU3/Mzk1NjQyNzkvaWxf/NjAweDYwMC41NzM5/NTY0Mjc5XzQyYmku/anBn")),
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Solo Leveling, Vol 5",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "PoppinsRegular",
+                                fontSize: 18),
+                          ),
+                          const Text(
+                            "Chapter 32",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "PoppinsRegular",
+                                fontSize: 12),
+                          ),
+                          const Text(
+                            "Hye Young im",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontFamily: "PoppinsRegular",
+                                fontSize: 12),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          const Row(
+                            children: [
+                              Text(
+                                "78%",
+                                style: TextStyle(
+                                    color: Colors.amber,
+                                    fontFamily: "PoppinsRegular",
+                                    fontSize: 12.5),
+                              ),
+                              Text(
+                                "  •  8 chapters left ",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "PoppinsRegular",
+                                    fontSize: 12.5),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 1,
+                          ),
+                          SizedBox(
+                            width: screenSize.width * 0.49,
+                            child: LinearPercentIndicator(
+                              padding: EdgeInsets.zero,
+                              lineHeight: 3,
+                              backgroundColor:
+                                  const Color.fromRGBO(64, 65, 65, 1),
+                              progressColor: Colors.amber,
+                              percent: 0.78,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          ButtonComponent(text: "CONTINUE READING")
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ));
   }
 }
