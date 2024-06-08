@@ -37,6 +37,8 @@ dependencies:
   mangadex_library: ^2.0.5
   material_design_icons_flutter: ^7.0.7296
   percent_indicator: ^4.2.3
+  page_flip: ^0.2.3
+  numberpicker: ^2.1.2
 
 dev_dependencies:
   flutter_test:

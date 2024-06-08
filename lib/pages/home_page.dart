@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:manga_reader_app/components/all_books_component.dart";
 import "package:manga_reader_app/components/button_component.dart";
 import "package:manga_reader_app/components/for_you_component.dart";
+import "package:manga_reader_app/pages/all_books_page.dart";
 import "package:percent_indicator/linear_percent_indicator.dart";
 
 class HomePage extends StatelessWidget {
@@ -158,18 +159,26 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       "ALL BOOKS",
                       style: TextStyle(
                           color: Colors.white, fontFamily: "go3", fontSize: 25),
                     ),
-                    Icon(
-                      Icons.arrow_right_alt,
-                      color: Colors.white,
-                      size: 28,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AllBooksPage()));
+                      },
+                      child: const Icon(
+                        Icons.arrow_right_alt,
+                        color: Colors.white,
+                        size: 28,
+                      ),
                     )
                   ],
                 ),
