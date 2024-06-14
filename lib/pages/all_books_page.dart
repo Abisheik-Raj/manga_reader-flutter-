@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import "package:flutter/material.dart";
 import "package:manga_reader_app/components/all_books_horizontal_component.dart";
 import "package:manga_reader_app/components/genre_clip_component.dart";

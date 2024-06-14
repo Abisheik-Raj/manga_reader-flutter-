@@ -70,7 +70,7 @@ class _ReadingPageState extends State<ReadingPage> {
                 const Image(
                   image: NetworkImage(
                       "https://imgs.search.brave.com/cVVkfDVDaLf0LTo0_TJeyOcWhPZIAp35gS4xTPEDxRQ/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzU5Lzgz/LzIzLzU5ODMyMzY4/ZDlmNmI3ZWEwODYz/NmZlNmNjZWU0Nzhh/LmpwZw"),
-                )
+                ),
               ],
             ),
           ),
