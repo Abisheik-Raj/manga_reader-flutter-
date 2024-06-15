@@ -39,7 +39,8 @@ dependencies:
   percent_indicator: ^4.2.3
   page_flip: ^0.2.3
   numberpicker: ^2.1.2
-
+  modal_bottom_sheet: ^3.0.0
+  popover: ^0.3.0+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -85,6 +86,10 @@ flutter:
     - family: PoppinsRegular
       fonts:
         - asset: assets/fonts/Poppins-Regular.ttf
+
+    - family: PoppinsSemiBold
+      fonts:
+        - asset: assets/fonts/Poppins-SemiBold.ttf
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
