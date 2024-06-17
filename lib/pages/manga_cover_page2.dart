@@ -19,6 +19,7 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
   bool showFullDescription = false;
   GlobalKey listChapterKey = GlobalKey();
   int selectedChapter = 1;
+  ScrollController chapterController = ScrollController();
 
   String clientId =
       "personal-client-a6a5fe43-df61-48a9-9084-11d7379a8ced-6bcb7bb9";
@@ -203,7 +204,15 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                                 width: screenSize.width * 0.4,
                                 context: listChapterKey.currentContext!,
                                 bodyBuilder: (context) {
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    chapterController.jumpTo(
+                                      (selectedChapter - 1) * 40.0,
+                                    );
+                                  });
+
                                   return ListView.builder(
+                                    controller: chapterController,
                                     padding: EdgeInsets.zero,
                                     itemCount: chapterList.length,
                                     itemBuilder: (context, index) {
