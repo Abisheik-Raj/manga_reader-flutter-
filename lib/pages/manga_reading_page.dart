@@ -26,6 +26,7 @@ class MangaReadingPage extends StatefulWidget {
 class _MangaReadingPageState extends State<MangaReadingPage> {
   GlobalKey listChapterKey = GlobalKey();
   List<String> pageImageLinks = [];
+  ScrollController chapterController = ScrollController();
 
   @override
   void initState() {
@@ -79,9 +80,15 @@ class _MangaReadingPageState extends State<MangaReadingPage> {
                       width: screenSize.width * 0.4,
                       context: listChapterKey.currentContext!,
                       bodyBuilder: (context) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          chapterController.jumpTo(
+                            (widget.selectedChapter - 1) * 40.0,
+                          );
+                        });
                         return ListView.builder(
                           padding: EdgeInsets.zero,
                           itemCount: widget.totalChapters,
+                          controller: chapterController,
                           itemBuilder: (context, index) {
                             return Column(
                               children: [
