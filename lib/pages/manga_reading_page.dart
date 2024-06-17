@@ -1,10 +1,23 @@
+// ignore_for_file: must_be_immutable
+
+import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
+import "package:mangadex_library/mangadex_client.dart";
+import "package:mangadex_library/mangadex_library.dart";
 import "package:popover/popover.dart";
 
 class MangaReadingPage extends StatefulWidget {
-  const MangaReadingPage({super.key});
+  MangaReadingPage(
+      {super.key,
+      required this.selectedChapter,
+      required this.totalChapters,
+      required this.chapterList,
+      required this.client});
+  int selectedChapter;
+  int totalChapters;
+  List<InternalChapterData> chapterList;
+  MangadexPersonalClient client;
 
   @override
   State<MangaReadingPage> createState() => _MangaReadingPageState();
@@ -12,7 +25,29 @@ class MangaReadingPage extends StatefulWidget {
 
 class _MangaReadingPageState extends State<MangaReadingPage> {
   GlobalKey listChapterKey = GlobalKey();
-  int currentChapter = 1;
+  List<String> pageImageLinks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getPageImageLinks();
+  }
+
+  void getPageImageLinks() async {
+    pageImageLinks = [];
+
+    var baseUrl = await widget.client.getBaseUrl(
+        widget.chapterList[widget.selectedChapter - 1].id.toString());
+
+    for (var filename in baseUrl.chapter!.dataSaver!) {
+      pageImageLinks.add(widget.client.constructPageUrl(
+          baseUrl.baseUrl!, true, baseUrl.chapter!.hash!, filename));
+    }
+
+    print(pageImageLinks);
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,15 +83,16 @@ class _MangaReadingPageState extends State<MangaReadingPage> {
                       bodyBuilder: (context) {
                         return ListView.builder(
                           padding: EdgeInsets.zero,
-                          itemCount: 20,
+                          itemCount: widget.totalChapters,
                           itemBuilder: (context, index) {
                             return Column(
                               children: [
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      currentChapter = index + 1;
+                                      widget.selectedChapter = index + 1;
                                       Navigator.pop(context);
+                                      getPageImageLinks();
                                     });
                                   },
                                   child: Container(
@@ -101,7 +137,7 @@ class _MangaReadingPageState extends State<MangaReadingPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        "Chapter   $currentChapter",
+                        "Chapter   ${widget.selectedChapter}",
                         style: const TextStyle(
                           color: Colors.white,
                           fontFamily: "PoppinsSemiBold",
@@ -131,14 +167,11 @@ class _MangaReadingPageState extends State<MangaReadingPage> {
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                  childCount: 10,
-                  (context, index) => const Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Image(
-                          image: NetworkImage(
-                              "https://imgs.search.brave.com/GtndKDinPmkziYsXLceZY_lDIDYK9BB4kZrNFEw-5YQ/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2M4L2Ri/Lzc4L2M4ZGI3OGY0/YTA2NDM5Y2IzNTc0/Njc4OThkZDI5ODFi/LmpwZw"),
-                        ),
-                      )),
+                  childCount: pageImageLinks.length,
+                  (context, index) => Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child:
+                          CachedNetworkImage(imageUrl: pageImageLinks[index]))),
             ),
           ],
         ),

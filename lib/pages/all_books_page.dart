@@ -4,6 +4,8 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:manga_reader_app/components/all_books_horizontal_component.dart";
 import "package:manga_reader_app/components/genre_clip_component.dart";
+import "package:manga_reader_app/components/shimmer_box.dart";
+import "package:manga_reader_app/pages/manga_cover_page2.dart";
 import "package:mangadex_library/mangadex_client.dart";
 import "package:mangadex_library/mangadex_library.dart";
 
@@ -20,6 +22,8 @@ class _AllBooksPageState extends State<AllBooksPage> {
   bool eroticaClicked = false;
   bool pornographicClicked = false;
 
+  bool isLoading = true;
+
   // late List<bool> clickedContentRating = [];
 
   final TextEditingController searchController = TextEditingController();
@@ -29,6 +33,8 @@ class _AllBooksPageState extends State<AllBooksPage> {
 
   String username = "AbisheikRaj";
   String password = "ItsChennai@2313";
+
+  ScrollController scrollController = ScrollController();
 
   late MangadexPersonalClient client;
   late List<SearchData> books = [];
@@ -40,25 +46,23 @@ class _AllBooksPageState extends State<AllBooksPage> {
     client =
         MangadexPersonalClient(clientId: clientId, clientSecret: clientSecret);
     login();
-    // clickedContentRating = [
-    //   safeClicked,
-    //   suggestiveClicked,
-    //   eroticaClicked,
-    //   pornographicClicked
-    // ];
 
     getBooksByRating();
   }
 
   void getBooksByName(String name) async {
+    setState(() {
+      isLoading = true;
+    });
     Search searchData = await client.search(query: name);
     books = searchData.data!;
-
+    booksMap = [];
     for (int i = 0; i < books.length; i++) {
       String mangaID = books[i].id.toString();
       String imageUrl = await getMangaCoverArtUrl(mangaID);
 
       booksMap.insert(i, {
+        "id": mangaID,
         "title": books[i].attributes!.title!.en.toString(),
         "contentRating": books[i].attributes!.contentRating.toString(),
         "description": books[i].attributes!.description!.en.toString(),
@@ -66,10 +70,17 @@ class _AllBooksPageState extends State<AllBooksPage> {
       });
     }
 
-    setState(() {});
+    scrollToTop();
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void getBooksByRating() async {
+    setState(() {
+      isLoading = true;
+    });
     List<ContentRating> rating = [
       if (safeClicked) ContentRating.safe,
       if (suggestiveClicked) ContentRating.suggestive,
@@ -79,12 +90,14 @@ class _AllBooksPageState extends State<AllBooksPage> {
 
     Search searchData = await client.search(contentRating: rating);
     books = searchData.data!;
+    booksMap = [];
 
     for (int i = 0; i < books.length; i++) {
       String mangaID = books[i].id.toString();
       String imageUrl = await getMangaCoverArtUrl(mangaID);
 
       booksMap.insert(i, {
+        "id": mangaID,
         "title": books[i].attributes!.title!.en.toString(),
         "contentRating": books[i].attributes!.contentRating.toString(),
         "description": books[i].attributes!.description!.en.toString(),
@@ -92,7 +105,11 @@ class _AllBooksPageState extends State<AllBooksPage> {
       });
     }
 
-    setState(() {});
+    scrollToTop();
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void login() async {
@@ -106,7 +123,16 @@ class _AllBooksPageState extends State<AllBooksPage> {
 
   Future<String> getMangaCoverArtUrl(String mangaID) async {
     Cover coverArtUrl = await client.getCoverArt([mangaID]);
+
     return "https://uploads.mangadex.org/covers/$mangaID/${coverArtUrl.data![0].attributes!.fileName}";
+  }
+
+  void scrollToTop() {
+    scrollController.animateTo(
+      0.0,
+      duration: const Duration(seconds: 1),
+      curve: Curves.linear,
+    );
   }
 
   @override
@@ -170,7 +196,7 @@ class _AllBooksPageState extends State<AllBooksPage> {
                         getBooksByRating();
                       },
                       child: GenreClipComponent(
-                        text: "Erotica",
+                        text: "Shounin",
                         clicked: eroticaClicked,
                       ),
                     ),
@@ -180,7 +206,7 @@ class _AllBooksPageState extends State<AllBooksPage> {
                         getBooksByRating();
                       },
                       child: GenreClipComponent(
-                        text: "Pornographic",
+                        text: "Senin",
                         clicked: pornographicClicked,
                       ),
                     ),
@@ -224,43 +250,62 @@ class _AllBooksPageState extends State<AllBooksPage> {
               const SizedBox(
                 height: 20,
               ),
-              Expanded(
-                child: ListView.builder(
-                    itemCount: booksMap.length,
-                    itemBuilder: (context, index) {
-                      return AllBooksHorizontalComponent(
-                          imageUrl: booksMap[index]["imageUrl"]!,
-                          title: booksMap[index]["title"]!,
-                          contentRating: booksMap[index]["contentRating"]!,
-                          description: booksMap[index]["description"]!);
+              isLoading == true
+                  ? Expanded(
+                      child: ListView.builder(
+                          controller: scrollController,
+                          itemCount: booksMap.length,
+                          itemBuilder: (context, index) {
+                            return const ShimmerBox();
+                          }),
+                    )
+                  : Expanded(
+                      child: ListView.builder(
+                          itemCount: booksMap.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MangaCoverPage2(
+                                            data: booksMap[index])));
+                              },
+                              child: AllBooksHorizontalComponent(
+                                  imageUrl: booksMap[index]["imageUrl"]!,
+                                  title: booksMap[index]["title"]!,
+                                  contentRating: booksMap[index]
+                                      ["contentRating"]!,
+                                  description: booksMap[index]["description"]!),
+                            );
 
-                      // return FutureBuilder(
-                      //     future: getMangaCoverArtUrl(mangaID),
-                      //     builder: (context, snapshot) {
-                      //       if (snapshot.hasData) {
-                      //         return AllBooksHorizontalComponent(
-                      //           imageUrl: snapshot.data!,
-                      //           title: books[index]
-                      //               .attributes!
-                      //               .title!
-                      //               .en
-                      //               .toString(),
-                      //           contentRating: books[index]
-                      //               .attributes!
-                      //               .contentRating
-                      //               .toString(),
-                      //           description: books[index]
-                      //               .attributes!
-                      //               .description!
-                      //               .en
-                      //               .toString(),
-                      //         );
-                      //       } else {
-                      //         return Container();
-                      //       }
-                      //     });
-                    }),
-              ),
+                            // return FutureBuilder(
+                            //     future: getMangaCoverArtUrl(mangaID),
+                            //     builder: (context, snapshot) {
+                            //       if (snapshot.hasData) {
+                            //         return AllBooksHorizontalComponent(
+                            //           imageUrl: snapshot.data!,
+                            //           title: books[index]
+                            //               .attributes!
+                            //               .title!
+                            //               .en
+                            //               .toString(),
+                            //           contentRating: books[index]
+                            //               .attributes!
+                            //               .contentRating
+                            //               .toString(),
+                            //           description: books[index]
+                            //               .attributes!
+                            //               .description!
+                            //               .en
+                            //               .toString(),
+                            //         );
+                            //       } else {
+                            //         return Container();
+                            //       }
+                            //     });
+                          }),
+                    ),
             ],
           ),
         ),

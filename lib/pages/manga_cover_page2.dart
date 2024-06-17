@@ -1,10 +1,15 @@
+// ignore_for_file: must_be_immutable
+
 import "package:flutter/material.dart";
 import "package:manga_reader_app/pages/manga_reading_page.dart";
+import "package:mangadex_library/mangadex_client.dart";
+import "package:mangadex_library/mangadex_library.dart";
 import "package:percent_indicator/linear_percent_indicator.dart";
 import "package:popover/popover.dart";
 
 class MangaCoverPage2 extends StatefulWidget {
-  const MangaCoverPage2({super.key});
+  MangaCoverPage2({super.key, required this.data});
+  Map<String, String> data;
 
   @override
   State<MangaCoverPage2> createState() => _MangaCoverPage2State();
@@ -13,7 +18,47 @@ class MangaCoverPage2 extends StatefulWidget {
 class _MangaCoverPage2State extends State<MangaCoverPage2> {
   bool showFullDescription = false;
   GlobalKey listChapterKey = GlobalKey();
-  int currentChapter = 1;
+  int selectedChapter = 1;
+
+  String clientId =
+      "personal-client-a6a5fe43-df61-48a9-9084-11d7379a8ced-6bcb7bb9";
+  String clientSecret = "zbwHSvb3jCwetCVXYzNswdldsCjlJh9T";
+
+  String username = "AbisheikRaj";
+  String password = "ItsChennai@2313";
+
+  late MangadexPersonalClient client;
+
+  List<InternalChapterData> chapterList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    client =
+        MangadexPersonalClient(clientId: clientId, clientSecret: clientSecret);
+    login();
+    getChapterList();
+  }
+
+  void getChapterList() async {
+    ChapterData result =
+        await client.getChapters(widget.data["id"].toString(), limit: 20);
+
+    for (var i in result.data!) {
+      chapterList.add(i);
+    }
+
+    setState(() {});
+  }
+
+  void login() async {
+    try {
+      await client.login(username, password);
+      debugPrint("Logged in Successfully");
+    } catch (e) {
+      debugPrint("Error occured : ${e.toString()}");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +74,11 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
             Container(
               width: double.infinity,
               height: screenSize.height * 0.35,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 image: DecorationImage(
                   opacity: 0.1,
                   fit: BoxFit.cover,
-                  image: NetworkImage(
-                      "https://imgs.search.brave.com/sH-112am2bomixyOAXGyEXJ7YbjtjtK2Jc_0nNyf2sk/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzAxLzRi/LzljLzAxNGI5Y2Uz/NmMyNmFhZGE4NTRl/ZGM5NzdlY2M3NzMy/LmpwZw"),
+                  image: NetworkImage(widget.data["imageUrl"].toString()),
                 ),
               ),
               child: Stack(
@@ -63,10 +107,9 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                       ),
                     ),
                   ),
-                  const Center(
+                  Center(
                     child: Image(
-                      image: NetworkImage(
-                          "https://imgs.search.brave.com/sH-112am2bomixyOAXGyEXJ7YbjtjtK2Jc_0nNyf2sk/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzAxLzRi/LzljLzAxNGI5Y2Uz/NmMyNmFhZGE4NTRl/ZGM5NzdlY2M3NzMy/LmpwZw"),
+                      image: NetworkImage(widget.data["imageUrl"].toString()),
                     ),
                   ),
                 ],
@@ -78,9 +121,9 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Naruto Shippuden",
-                      style: TextStyle(
+                    Text(
+                      widget.data["title"].toString(),
+                      style: const TextStyle(
                         fontFamily: "PoppinsSemiBold",
                         color: Colors.white,
                         fontSize: 22,
@@ -89,9 +132,9 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                     const SizedBox(
                       height: 5,
                     ),
-                    const Text(
-                      "20 Chapters",
-                      style: TextStyle(
+                    Text(
+                      "${chapterList.length} Chapters",
+                      style: const TextStyle(
                         fontFamily: "PoppinsRegular",
                         color: Colors.white,
                         fontSize: 13,
@@ -107,10 +150,10 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                                 showFullDescription = !showFullDescription;
                               });
                             },
-                            child: const Text(
-                              "Naruto Uzumaki (うずまきナルト, Uzumaki Naruto) is a shinobi of Konohagakure's Uzumaki clan. He became the jinchūriki of the Nine-Tails on the day of his birth — a fate that caused him to be shunned by most of Konoha throughout his childhood. After joining Team Kakashi, Naruto worked hard to gain the village's acknowledgement all the while chasing his dream to become Hokage. In the following years, through many hardships and ordeals, he became a capable ninja, regarded as a hero both by the villagers, and soon after, the rest of the world, becoming known as the Hero of the Hidden Leaf (木ノ葉隠れの英雄, Konohagakure no Eiyū, literally meaning: Hero of the Hidden Tree Leaves). He soon proved to be one of the main factors in winning the Fourth Shinobi World War, leading him to achieve his dream and become the village's Seventh Hokage (七代目火影, Nanadaime Hokage, literally meaning: Seventh Fire Shadow).",
+                            child: Text(
+                              widget.data["description"].toString(),
                               maxLines: 5,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: "PoppinsRegular",
                                 color: Colors.white,
                                 fontSize: 12,
@@ -124,9 +167,9 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                                 showFullDescription = !showFullDescription;
                               });
                             },
-                            child: const Text(
-                              "Naruto Uzumaki (うずまきナルト, Uzumaki Naruto) is a shinobi of Konohagakure's Uzumaki clan. He became the jinchūriki of the Nine-Tails on the day of his birth — a fate that caused him to be shunned by most of Konoha throughout his childhood. After joining Team Kakashi, Naruto worked hard to gain the village's acknowledgement all the while chasing his dream to become Hokage. In the following years, through many hardships and ordeals, he became a capable ninja, regarded as a hero both by the villagers, and soon after, the rest of the world, becoming known as the Hero of the Hidden Leaf (木ノ葉隠れの英雄, Konohagakure no Eiyū, literally meaning: Hero of the Hidden Tree Leaves). He soon proved to be one of the main factors in winning the Fourth Shinobi World War, leading him to achieve his dream and become the village's Seventh Hokage (七代目火影, Nanadaime Hokage, literally meaning: Seventh Fire Shadow).",
-                              style: TextStyle(
+                            child: Text(
+                              widget.data["description"].toString(),
+                              style: const TextStyle(
                                 fontFamily: "PoppinsRegular",
                                 color: Colors.white,
                                 fontSize: 12,
@@ -151,14 +194,14 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                                 bodyBuilder: (context) {
                                   return ListView.builder(
                                     padding: EdgeInsets.zero,
-                                    itemCount: 20,
+                                    itemCount: chapterList.length,
                                     itemBuilder: (context, index) {
                                       return Column(
                                         children: [
                                           GestureDetector(
                                             onTap: () {
                                               setState(() {
-                                                currentChapter = index + 1;
+                                                selectedChapter = index + 1;
                                                 Navigator.pop(context);
                                               });
                                             },
@@ -208,7 +251,7 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  "Chapter   $currentChapter",
+                                  "Chapter   $selectedChapter",
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontFamily: "PoppinsSemiBold",
@@ -278,8 +321,12 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const MangaReadingPage()));
+                                builder: (context) => MangaReadingPage(
+                                      selectedChapter: selectedChapter,
+                                      totalChapters: chapterList.length,
+                                      chapterList: chapterList,
+                                      client: client,
+                                    )));
                       },
                       child: Container(
                         width: double.infinity,
