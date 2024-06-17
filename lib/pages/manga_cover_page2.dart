@@ -41,11 +41,22 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
   }
 
   void getChapterList() async {
-    ChapterData result =
-        await client.getChapters(widget.data["id"].toString(), limit: 20);
+    int offset = 0;
 
-    for (var i in result.data!) {
-      chapterList.add(i);
+    ChapterData result;
+
+    while (true) {
+      result = await client.getChapters(widget.data["id"].toString(),
+          limit: 100, offset: offset);
+
+      if (result.data!.isEmpty) {
+        break;
+      }
+
+      offset += 100;
+      for (var i in result.data!) {
+        chapterList.add(i);
+      }
     }
 
     setState(() {});

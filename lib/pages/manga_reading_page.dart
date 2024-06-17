@@ -44,8 +44,6 @@ class _MangaReadingPageState extends State<MangaReadingPage> {
           baseUrl.baseUrl!, true, baseUrl.chapter!.hash!, filename));
     }
 
-    print(pageImageLinks);
-
     setState(() {});
   }
 

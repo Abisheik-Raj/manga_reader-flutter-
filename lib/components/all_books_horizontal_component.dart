@@ -7,10 +7,12 @@ class AllBooksHorizontalComponent extends StatelessWidget {
     required this.title,
     required this.contentRating,
     required this.description,
+    required this.publicDemographic,
   });
   String imageUrl;
   String title;
   String contentRating;
+  String publicDemographic;
   String description;
 
   @override
@@ -52,7 +54,7 @@ class AllBooksHorizontalComponent extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: "\n$contentRating",
+                          text: "\n$contentRating  $publicDemographic",
                           style: const TextStyle(
                               color: Colors.grey,
                               fontFamily: "PoppinsRegular",

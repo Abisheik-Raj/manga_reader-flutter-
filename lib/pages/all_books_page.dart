@@ -19,8 +19,10 @@ class AllBooksPage extends StatefulWidget {
 class _AllBooksPageState extends State<AllBooksPage> {
   bool safeClicked = true;
   bool suggestiveClicked = false;
-  bool eroticaClicked = false;
-  bool pornographicClicked = false;
+  bool shounenClicked = false;
+  bool seinenClicked = false;
+  bool shoujoClicked = false;
+  bool joseiClicked = false;
 
   bool isLoading = true;
 
@@ -65,6 +67,8 @@ class _AllBooksPageState extends State<AllBooksPage> {
         "id": mangaID,
         "title": books[i].attributes!.title!.en.toString(),
         "contentRating": books[i].attributes!.contentRating.toString(),
+        "publicDemographic":
+            books[i].attributes!.publicationDemographic.toString(),
         "description": books[i].attributes!.description!.en.toString(),
         "imageUrl": imageUrl,
       });
@@ -84,11 +88,17 @@ class _AllBooksPageState extends State<AllBooksPage> {
     List<ContentRating> rating = [
       if (safeClicked) ContentRating.safe,
       if (suggestiveClicked) ContentRating.suggestive,
-      if (eroticaClicked) ContentRating.erotica,
-      if (pornographicClicked) ContentRating.pornographic,
     ];
 
-    Search searchData = await client.search(contentRating: rating);
+    List<PublicDemographic> publicDemographic = [
+      if (shounenClicked) PublicDemographic.shounen,
+      if (seinenClicked) PublicDemographic.seinen,
+      if (shoujoClicked) PublicDemographic.shoujo,
+      if (joseiClicked) PublicDemographic.josei,
+    ];
+
+    Search searchData = await client.search(
+        contentRating: rating, publicationDemographic: publicDemographic);
     books = searchData.data!;
     booksMap = [];
 
@@ -100,6 +110,8 @@ class _AllBooksPageState extends State<AllBooksPage> {
         "id": mangaID,
         "title": books[i].attributes!.title!.en.toString(),
         "contentRating": books[i].attributes!.contentRating.toString(),
+        "publicDemographic":
+            books[i].attributes!.publicationDemographic.toString(),
         "description": books[i].attributes!.description!.en.toString(),
         "imageUrl": imageUrl,
       });
@@ -192,22 +204,42 @@ class _AllBooksPageState extends State<AllBooksPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        eroticaClicked = !eroticaClicked;
+                        shounenClicked = !shounenClicked;
                         getBooksByRating();
                       },
                       child: GenreClipComponent(
-                        text: "Shounin",
-                        clicked: eroticaClicked,
+                        text: "Shounen",
+                        clicked: shounenClicked,
                       ),
                     ),
                     GestureDetector(
                       onTap: () {
-                        pornographicClicked = !pornographicClicked;
+                        seinenClicked = !seinenClicked;
                         getBooksByRating();
                       },
                       child: GenreClipComponent(
                         text: "Senin",
-                        clicked: pornographicClicked,
+                        clicked: seinenClicked,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        shoujoClicked = !shoujoClicked;
+                        getBooksByRating();
+                      },
+                      child: GenreClipComponent(
+                        text: "Shoujo",
+                        clicked: shoujoClicked,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        joseiClicked = !joseiClicked;
+                        getBooksByRating();
+                      },
+                      child: GenreClipComponent(
+                        text: "Josei",
+                        clicked: joseiClicked,
                       ),
                     ),
                   ],
@@ -276,6 +308,13 @@ class _AllBooksPageState extends State<AllBooksPage> {
                                   title: booksMap[index]["title"]!,
                                   contentRating: booksMap[index]
                                       ["contentRating"]!,
+                                  publicDemographic: booksMap[index]
+                                                  ["publicDemographic"]!
+                                              .toString() ==
+                                          "null"
+                                      ? ""
+                                      : booksMap[index]["publicDemographic"]!
+                                          .toString(),
                                   description: booksMap[index]["description"]!),
                             );
 
