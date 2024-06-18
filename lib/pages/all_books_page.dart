@@ -8,6 +8,7 @@ import "package:manga_reader_app/components/shimmer_box.dart";
 import "package:manga_reader_app/pages/manga_cover_page2.dart";
 import "package:mangadex_library/mangadex_client.dart";
 import "package:mangadex_library/mangadex_library.dart";
+import "package:modal_bottom_sheet/modal_bottom_sheet.dart";
 
 class AllBooksPage extends StatefulWidget {
   const AllBooksPage({super.key});
@@ -297,11 +298,12 @@ class _AllBooksPageState extends State<AllBooksPage> {
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MangaCoverPage2(
-                                            data: booksMap[index])));
+                                showCupertinoModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return MangaCoverPage2(
+                                          data: booksMap[index]);
+                                    });
                               },
                               child: AllBooksHorizontalComponent(
                                   imageUrl: booksMap[index]["imageUrl"]!,

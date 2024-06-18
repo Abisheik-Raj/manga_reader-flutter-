@@ -7,6 +7,7 @@ import "package:manga_reader_app/pages/all_books_page.dart";
 import "package:manga_reader_app/pages/manga_cover_page2.dart";
 import "package:mangadex_library/mangadex_client.dart";
 import "package:mangadex_library/mangadex_library.dart";
+import "package:modal_bottom_sheet/modal_bottom_sheet.dart";
 import "package:percent_indicator/linear_percent_indicator.dart";
 
 class HomePage extends StatefulWidget {
@@ -270,11 +271,11 @@ class _HomePageState extends State<HomePage> {
                   (BuildContext context, int index) {
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    MangaCoverPage2(data: booksMap[index])));
+                        showCupertinoModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return MangaCoverPage2(data: booksMap[index]);
+                            });
                       },
                       child: AllBooksComponent(
                         imageUrl: booksMap[index]["imageUrl"]!,
