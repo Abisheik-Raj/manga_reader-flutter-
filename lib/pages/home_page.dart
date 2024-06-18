@@ -2,11 +2,80 @@ import "package:flutter/material.dart";
 import "package:manga_reader_app/components/all_books_component.dart";
 import "package:manga_reader_app/components/button_component.dart";
 import "package:manga_reader_app/components/for_you_component.dart";
+import "package:manga_reader_app/components/shimmer_box_2.dart";
 import "package:manga_reader_app/pages/all_books_page.dart";
+import "package:manga_reader_app/pages/manga_cover_page2.dart";
+import "package:mangadex_library/mangadex_client.dart";
+import "package:mangadex_library/mangadex_library.dart";
 import "package:percent_indicator/linear_percent_indicator.dart";
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String clientId =
+      "personal-client-a6a5fe43-df61-48a9-9084-11d7379a8ced-6bcb7bb9";
+  String clientSecret = "zbwHSvb3jCwetCVXYzNswdldsCjlJh9T";
+
+  String username = "AbisheikRaj";
+  String password = "ItsChennai@2313";
+
+  late MangadexPersonalClient client;
+  late List<SearchData> books = [];
+  late List<Map<String, String>> booksMap = [];
+
+  @override
+  void initState() {
+    super.initState();
+    client =
+        MangadexPersonalClient(clientId: clientId, clientSecret: clientSecret);
+    login();
+    getBooksByRating();
+  }
+
+  void getBooksByRating() async {
+    Search searchData = await client.search(
+      contentRating: [ContentRating.safe],
+    );
+    books = searchData.data!;
+    booksMap = [];
+
+    for (int i = 0; i < books.length; i++) {
+      String mangaID = books[i].id.toString();
+      String imageUrl = await getMangaCoverArtUrl(mangaID);
+
+      booksMap.insert(i, {
+        "id": mangaID,
+        "title": books[i].attributes!.title!.en.toString(),
+        "contentRating": books[i].attributes!.contentRating.toString(),
+        "publicDemographic":
+            books[i].attributes!.publicationDemographic.toString(),
+        "description": books[i].attributes!.description!.en.toString(),
+        "imageUrl": imageUrl,
+      });
+    }
+
+    setState(() {});
+  }
+
+  void login() async {
+    try {
+      await client.login(username, password);
+      debugPrint("Logged in Successfully");
+    } catch (e) {
+      debugPrint("Error occured : ${e.toString()}");
+    }
+  }
+
+  Future<String> getMangaCoverArtUrl(String mangaID) async {
+    Cover coverArtUrl = await client.getCoverArt([mangaID]);
+
+    return "https://uploads.mangadex.org/covers/$mangaID/${coverArtUrl.data![0].attributes!.fileName}";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,19 +258,39 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
-        SliverGrid(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 20,
-            childAspectRatio: 0.62,
-          ),
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              return const AllBooksComponent();
-            },
-            childCount: 10,
-          ),
-        ),
+        booksMap.isEmpty
+            ? const ShimmerBox2()
+            : SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.58,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    MangaCoverPage2(data: booksMap[index])));
+                      },
+                      child: AllBooksComponent(
+                        imageUrl: booksMap[index]["imageUrl"]!,
+                        title: booksMap[index]["title"]!,
+                        description: booksMap[index]["description"]!,
+                        publicDemographic: booksMap[index]["publicDemographic"]!
+                                    .toString() ==
+                                "null"
+                            ? ""
+                            : booksMap[index]["publicDemographic"]!.toString(),
+                      ),
+                    );
+                  },
+                  childCount: booksMap.length,
+                ),
+              ),
       ]),
     ));
   }

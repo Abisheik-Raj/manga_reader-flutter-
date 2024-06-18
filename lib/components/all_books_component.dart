@@ -1,53 +1,79 @@
-import "package:flutter/cupertino.dart";
+// ignore_for_file: must_be_immutable
+
 import "package:flutter/material.dart";
 
 class AllBooksComponent extends StatelessWidget {
-  const AllBooksComponent({super.key});
+  AllBooksComponent({
+    super.key,
+    required this.imageUrl,
+    required this.title,
+    required this.description,
+    required this.publicDemographic,
+  });
+
+  String imageUrl;
+  String title;
+  String description;
+  String publicDemographic;
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AspectRatio(
-            aspectRatio: 0.75,
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: const DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                          "https://imgs.search.brave.com/ac6ot2lsjBDpWk0rKT76Dn4Nh-gZbuSXXRj-IfxLnKE/rs:fit:500:0:0/g:ce/aHR0cDovL20uZ2V0/dHl3YWxscGFwZXJz/LmNvbS93cC1jb250/ZW50L3VwbG9hZHMv/MjAyMC8wMS9OYXJ1/dG8tV2FsbHBhcGVy/LWltYWdlcy5wbmc"))),
-            ),
+          Container(
+            height: screenSize.height * 0.25,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                    fit: BoxFit.cover, image: NetworkImage(imageUrl))),
           ),
           const SizedBox(
             height: 10,
           ),
-          const Text(
-            "Naruto, Vol 5",
-            style: TextStyle(
+          Text(
+            title,
+            maxLines: 1,
+            style: const TextStyle(
                 color: Colors.white,
                 fontFamily: "PoppinsRegular",
-                fontSize: 15),
+                fontSize: 15,
+                overflow: TextOverflow.ellipsis),
           ),
           const SizedBox(
             height: 5,
           ),
-          const Text(
-            "Chapter 32",
-            style: TextStyle(
-                color: Colors.grey, fontFamily: "PoppinsRegular", fontSize: 12),
-          ),
+          publicDemographic.isNotEmpty
+              ? Container(
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: Colors.amber,
+                  ),
+                  child: Text(
+                    publicDemographic,
+                    style: const TextStyle(
+                        fontFamily: "go3", color: Colors.black, fontSize: 14),
+                  ),
+                )
+              : Container(),
           const SizedBox(
             height: 5,
           ),
-          const Text(
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+          Text(
+            description,
             maxLines: 2,
-            style: TextStyle(
-                color: Colors.grey, fontFamily: "PoppinsRegular", fontSize: 12),
+            style: const TextStyle(
+                color: Colors.grey,
+                fontFamily: "PoppinsRegular",
+                fontSize: 12,
+                overflow: TextOverflow.ellipsis),
           ),
         ],
       ),

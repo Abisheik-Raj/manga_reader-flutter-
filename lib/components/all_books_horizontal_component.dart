@@ -55,22 +55,41 @@ class AllBooksHorizontalComponent extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Text(
-                    "$contentRating  $publicDemographic",
-                    maxLines: 1,
-                    style: const TextStyle(
-                        color: Colors.grey,
-                        fontFamily: "PoppinsRegular",
-                        fontSize: 12,
-                        height: 2.2),
-                  ),
+                  // Text(
+                  //   "$contentRating  $publicDemographic",
+                  //   maxLines: 1,
+                  //   style: const TextStyle(
+                  //       color: Colors.grey,
+                  //       fontFamily: "PoppinsRegular",
+                  //       fontSize: 12,
+                  //       height: 2.2),
+                  // ),
+                  publicDemographic.isNotEmpty
+                      ? Container(
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: Colors.amber,
+                          ),
+                          child: Text(
+                            publicDemographic,
+                            style: const TextStyle(
+                                fontFamily: "go3",
+                                color: Colors.black,
+                                fontSize: 14),
+                          ),
+                        )
+                      : Container(),
                   const SizedBox(
-                    height: 25,
+                    height: 15,
                   ),
+
                   Expanded(
                     child: Text(
                       description,
-                      maxLines: 5,
+                      maxLines: 4,
                       style: const TextStyle(
                           color: Colors.grey,
                           fontFamily: "PoppinsRegular",

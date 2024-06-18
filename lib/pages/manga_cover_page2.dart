@@ -144,14 +144,16 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                     const SizedBox(
                       height: 5,
                     ),
-                    Text(
-                      "${chapterList.length} Chapters",
-                      style: const TextStyle(
-                        fontFamily: "PoppinsRegular",
-                        color: Colors.white,
-                        fontSize: 13,
-                      ),
-                    ),
+                    chapterList.isEmpty
+                        ? Container()
+                        : Text(
+                            "${chapterList.length} Chapters",
+                            style: const TextStyle(
+                              fontFamily: "PoppinsRegular",
+                              color: Colors.white,
+                              fontSize: 13,
+                            ),
+                          ),
                     const SizedBox(
                       height: 20,
                     ),

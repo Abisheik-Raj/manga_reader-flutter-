@@ -48,7 +48,6 @@ class _AllBooksPageState extends State<AllBooksPage> {
     client =
         MangadexPersonalClient(clientId: clientId, clientSecret: clientSecret);
     login();
-
     getBooksByRating();
   }
 
@@ -142,7 +141,7 @@ class _AllBooksPageState extends State<AllBooksPage> {
   void scrollToTop() {
     scrollController.animateTo(
       0.0,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 800),
       curve: Curves.linear,
     );
   }
@@ -286,7 +285,7 @@ class _AllBooksPageState extends State<AllBooksPage> {
                   ? Expanded(
                       child: ListView.builder(
                           controller: scrollController,
-                          itemCount: booksMap.length,
+                          itemCount: 5,
                           itemBuilder: (context, index) {
                             return const ShimmerBox();
                           }),
@@ -294,6 +293,7 @@ class _AllBooksPageState extends State<AllBooksPage> {
                   : Expanded(
                       child: ListView.builder(
                           itemCount: booksMap.length,
+                          controller: scrollController,
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {

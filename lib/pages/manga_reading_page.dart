@@ -187,14 +187,6 @@ class _MangaReadingPageState extends State<MangaReadingPage> {
                             imageProvider: NetworkImage(pageImageLinks[index])),
                       ))),
             ),
-            // SliverList(
-            //   delegate: SliverChildBuilderDelegate(
-            //       childCount: pageImageLinks.length,
-            //       (context, index) => Padding(
-            //           padding: const EdgeInsets.only(top: 10),
-            //           child:
-            //               CachedNetworkImage(imageUrl: pageImageLinks[index]))),
-            // ),
           ],
         ),
       ),
