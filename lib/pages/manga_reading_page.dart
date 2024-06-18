@@ -5,6 +5,7 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:mangadex_library/mangadex_client.dart";
 import "package:mangadex_library/mangadex_library.dart";
+import "package:photo_view/photo_view.dart";
 import "package:popover/popover.dart";
 
 class MangaReadingPage extends StatefulWidget {
@@ -175,9 +176,25 @@ class _MangaReadingPageState extends State<MangaReadingPage> {
                   childCount: pageImageLinks.length,
                   (context, index) => Padding(
                       padding: const EdgeInsets.only(top: 10),
-                      child:
-                          CachedNetworkImage(imageUrl: pageImageLinks[index]))),
+                      child: SizedBox(
+                        height: screenSize.height * 1,
+                        child: PhotoView(
+                            loadingBuilder: (context, event) {
+                              return Container();
+                            },
+                            minScale: PhotoViewComputedScale.contained,
+                            maxScale: PhotoViewComputedScale.covered * 5,
+                            imageProvider: NetworkImage(pageImageLinks[index])),
+                      ))),
             ),
+            // SliverList(
+            //   delegate: SliverChildBuilderDelegate(
+            //       childCount: pageImageLinks.length,
+            //       (context, index) => Padding(
+            //           padding: const EdgeInsets.only(top: 10),
+            //           child:
+            //               CachedNetworkImage(imageUrl: pageImageLinks[index]))),
+            // ),
           ],
         ),
       ),
