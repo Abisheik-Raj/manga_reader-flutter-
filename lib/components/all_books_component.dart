@@ -2,7 +2,7 @@
 
 import "package:flutter/material.dart";
 
-class AllBooksComponent extends StatelessWidget {
+class AllBooksComponent extends StatefulWidget {
   AllBooksComponent({
     super.key,
     required this.imageUrl,
@@ -17,6 +17,11 @@ class AllBooksComponent extends StatelessWidget {
   String publicDemographic;
 
   @override
+  State<AllBooksComponent> createState() => _AllBooksComponentState();
+}
+
+class _AllBooksComponentState extends State<AllBooksComponent> {
+  @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
@@ -30,13 +35,20 @@ class AllBooksComponent extends StatelessWidget {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 image: DecorationImage(
-                    fit: BoxFit.cover, image: NetworkImage(imageUrl))),
+                    fit: BoxFit.cover,
+                    image: NetworkImage(widget.imageUrl),
+                    onError: (exception, stackTrace) {
+                      setState(() {
+                        widget.imageUrl =
+                            'https://imgs.search.brave.com/fXArEBHCg1XnRCIrQhgRljgvjO2sGwDAgvd7EkavsrM/rs:fit:500:0:0/g:ce/aHR0cHM6Ly93d3cu/cHVibGljZG9tYWlu/cGljdHVyZXMubmV0/L3BpY3R1cmVzLzI4/MDAwMC92ZWxrYS9u/b3QtZm91bmQtaW1h/Z2UtMTUzODM4NjQ3/ODdsdS5qcGc'; // Use a local placeholder image
+                      });
+                    })),
           ),
           const SizedBox(
             height: 10,
           ),
           Text(
-            title,
+            widget.title,
             maxLines: 1,
             style: const TextStyle(
                 color: Colors.white,
@@ -47,7 +59,7 @@ class AllBooksComponent extends StatelessWidget {
           const SizedBox(
             height: 5,
           ),
-          publicDemographic.isNotEmpty
+          widget.publicDemographic.isNotEmpty
               ? Container(
                   margin: const EdgeInsets.symmetric(vertical: 10),
                   padding:
@@ -57,7 +69,7 @@ class AllBooksComponent extends StatelessWidget {
                     color: Colors.amber,
                   ),
                   child: Text(
-                    publicDemographic,
+                    widget.publicDemographic,
                     style: const TextStyle(
                         fontFamily: "go3", color: Colors.black, fontSize: 14),
                   ),
@@ -66,15 +78,25 @@ class AllBooksComponent extends StatelessWidget {
           const SizedBox(
             height: 5,
           ),
-          Text(
-            description,
-            maxLines: 2,
-            style: const TextStyle(
-                color: Colors.grey,
-                fontFamily: "PoppinsRegular",
-                fontSize: 12,
-                overflow: TextOverflow.ellipsis),
-          ),
+          widget.description == "null"
+              ? const Text(
+                  "NO DESCRIPTION",
+                  maxLines: 2,
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontFamily: "PoppinsRegular",
+                      fontSize: 12,
+                      overflow: TextOverflow.ellipsis),
+                )
+              : Text(
+                  widget.description,
+                  maxLines: 2,
+                  style: const TextStyle(
+                      color: Colors.grey,
+                      fontFamily: "PoppinsRegular",
+                      fontSize: 12,
+                      overflow: TextOverflow.ellipsis),
+                ),
         ],
       ),
     );

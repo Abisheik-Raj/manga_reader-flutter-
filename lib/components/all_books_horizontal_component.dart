@@ -2,7 +2,7 @@
 
 import "package:flutter/material.dart";
 
-class AllBooksHorizontalComponent extends StatelessWidget {
+class AllBooksHorizontalComponent extends StatefulWidget {
   AllBooksHorizontalComponent({
     super.key,
     required this.imageUrl,
@@ -19,6 +19,13 @@ class AllBooksHorizontalComponent extends StatelessWidget {
   String description;
 
   @override
+  State<AllBooksHorizontalComponent> createState() =>
+      _AllBooksHorizontalComponentState();
+}
+
+class _AllBooksHorizontalComponentState
+    extends State<AllBooksHorizontalComponent> {
+  @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
@@ -34,7 +41,14 @@ class AllBooksHorizontalComponent extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
-                    fit: BoxFit.cover, image: NetworkImage(imageUrl)),
+                    fit: BoxFit.cover,
+                    image: NetworkImage(widget.imageUrl),
+                    onError: (exception, stackTrace) {
+                      setState(() {
+                        widget.imageUrl =
+                            'https://imgs.search.brave.com/fXArEBHCg1XnRCIrQhgRljgvjO2sGwDAgvd7EkavsrM/rs:fit:500:0:0/g:ce/aHR0cHM6Ly93d3cu/cHVibGljZG9tYWlu/cGljdHVyZXMubmV0/L3BpY3R1cmVzLzI4/MDAwMC92ZWxrYS9u/b3QtZm91bmQtaW1h/Z2UtMTUzODM4NjQ3/ODdsdS5qcGc'; // Use a local placeholder image
+                      });
+                    }),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
@@ -46,7 +60,7 @@ class AllBooksHorizontalComponent extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    widget.title,
                     maxLines: 2,
                     style: const TextStyle(
                       color: Colors.white,
@@ -64,7 +78,7 @@ class AllBooksHorizontalComponent extends StatelessWidget {
                   //       fontSize: 12,
                   //       height: 2.2),
                   // ),
-                  publicDemographic.isNotEmpty
+                  widget.publicDemographic.isNotEmpty
                       ? Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           padding: const EdgeInsets.symmetric(
@@ -74,7 +88,7 @@ class AllBooksHorizontalComponent extends StatelessWidget {
                             color: Colors.amber,
                           ),
                           child: Text(
-                            publicDemographic,
+                            widget.publicDemographic,
                             style: const TextStyle(
                                 fontFamily: "go3",
                                 color: Colors.black,
@@ -87,15 +101,25 @@ class AllBooksHorizontalComponent extends StatelessWidget {
                   ),
 
                   Expanded(
-                    child: Text(
-                      description,
-                      maxLines: 4,
-                      style: const TextStyle(
-                          color: Colors.grey,
-                          fontFamily: "PoppinsRegular",
-                          fontSize: 12,
-                          overflow: TextOverflow.ellipsis),
-                    ),
+                    child: widget.description == "null"
+                        ? const Text(
+                            "NO DESCRIPTION",
+                            maxLines: 2,
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontFamily: "PoppinsRegular",
+                                fontSize: 12,
+                                overflow: TextOverflow.ellipsis),
+                          )
+                        : Text(
+                            widget.description,
+                            maxLines: 2,
+                            style: const TextStyle(
+                                color: Colors.grey,
+                                fontFamily: "PoppinsRegular",
+                                fontSize: 12,
+                                overflow: TextOverflow.ellipsis),
+                          ),
                   ),
                 ],
               ),

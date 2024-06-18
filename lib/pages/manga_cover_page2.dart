@@ -164,16 +164,24 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                                 showFullDescription = !showFullDescription;
                               });
                             },
-                            child: Text(
-                              widget.data["description"].toString(),
-                              maxLines: 5,
-                              style: const TextStyle(
-                                fontFamily: "PoppinsRegular",
-                                color: Colors.white,
-                                fontSize: 12,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
+                            child:
+                                widget.data["description"].toString() == "null"
+                                    ? const Text(
+                                        "NO DESCRIPTION",
+                                        style: TextStyle(
+                                          fontFamily: "PoppinsRegular",
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
+                                      )
+                                    : Text(
+                                        widget.data["description"].toString(),
+                                        style: const TextStyle(
+                                          fontFamily: "PoppinsRegular",
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
+                                      ),
                           )
                         : GestureDetector(
                             onTap: () {
@@ -181,14 +189,24 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                                 showFullDescription = !showFullDescription;
                               });
                             },
-                            child: Text(
-                              widget.data["description"].toString(),
-                              style: const TextStyle(
-                                fontFamily: "PoppinsRegular",
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
+                            child:
+                                widget.data["description"].toString() == "null"
+                                    ? const Text(
+                                        "NO DESCRIPTION",
+                                        style: TextStyle(
+                                          fontFamily: "PoppinsRegular",
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
+                                      )
+                                    : Text(
+                                        widget.data["description"].toString(),
+                                        style: const TextStyle(
+                                          fontFamily: "PoppinsRegular",
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
+                                      ),
                           ),
                     const SizedBox(
                       height: 30,
