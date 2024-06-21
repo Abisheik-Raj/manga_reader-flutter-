@@ -5,10 +5,12 @@ import "package:flutter/material.dart";
 import "package:manga_reader_app/components/all_books_horizontal_component.dart";
 import "package:manga_reader_app/components/genre_clip_component.dart";
 import "package:manga_reader_app/components/shimmer_box.dart";
+import "package:manga_reader_app/modals/recent_book_modal.dart";
 import "package:manga_reader_app/pages/manga_cover_page2.dart";
 import "package:mangadex_library/mangadex_client.dart";
 import "package:mangadex_library/mangadex_library.dart";
 import "package:modal_bottom_sheet/modal_bottom_sheet.dart";
+import "package:provider/provider.dart";
 
 class AllBooksPage extends StatefulWidget {
   const AllBooksPage({super.key});
@@ -296,28 +298,47 @@ class _AllBooksPageState extends State<AllBooksPage> {
                           itemCount: booksMap.length,
                           controller: scrollController,
                           itemBuilder: (context, index) {
+                            RecentBookModal recentBookModalProvider =
+                                Provider.of<RecentBookModal>(context,
+                                    listen: true);
+
+                            List recents =
+                                recentBookModalProvider.recents ?? [];
+                            int selectedChapter = 1;
+                            if (recents.isNotEmpty) {
+                              for (int i = 0; i < recents.length; i++) {
+                                if (recents[i]["id"] == booksMap[index]["id"]) {
+                                  selectedChapter =
+                                      recents[i]["currentChapter"];
+                                  break;
+                                }
+                              }
+                            }
+
                             return GestureDetector(
                               onTap: () {
                                 showCupertinoModalBottomSheet(
                                     context: context,
                                     builder: (context) {
                                       return MangaCoverPage2(
-                                          data: booksMap[index]);
+                                          data: booksMap[index],
+                                          selectedChapter: selectedChapter);
                                     });
                               },
                               child: AllBooksHorizontalComponent(
-                                  imageUrl: booksMap[index]["imageUrl"]!,
-                                  title: booksMap[index]["title"]!,
-                                  contentRating: booksMap[index]
-                                      ["contentRating"]!,
-                                  publicDemographic: booksMap[index]
-                                                  ["publicDemographic"]!
-                                              .toString() ==
-                                          "null"
-                                      ? ""
-                                      : booksMap[index]["publicDemographic"]!
-                                          .toString(),
-                                  description: booksMap[index]["description"]!),
+                                imageUrl: booksMap[index]["imageUrl"]!,
+                                title: booksMap[index]["title"]!,
+                                contentRating: booksMap[index]
+                                    ["contentRating"]!,
+                                publicDemographic: booksMap[index]
+                                                ["publicDemographic"]!
+                                            .toString() ==
+                                        "null"
+                                    ? ""
+                                    : booksMap[index]["publicDemographic"]!
+                                        .toString(),
+                                description: booksMap[index]["description"]!,
+                              ),
                             );
 
                             // return FutureBuilder(

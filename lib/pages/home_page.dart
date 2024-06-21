@@ -3,12 +3,15 @@ import "package:manga_reader_app/components/all_books_component.dart";
 import "package:manga_reader_app/components/button_component.dart";
 import "package:manga_reader_app/components/for_you_component.dart";
 import "package:manga_reader_app/components/shimmer_box_2.dart";
+import "package:manga_reader_app/modals/recent_book_modal.dart";
 import "package:manga_reader_app/pages/all_books_page.dart";
 import "package:manga_reader_app/pages/manga_cover_page2.dart";
+import "package:manga_reader_app/services/firebase_updations.dart";
 import "package:mangadex_library/mangadex_client.dart";
 import "package:mangadex_library/mangadex_library.dart";
 import "package:modal_bottom_sheet/modal_bottom_sheet.dart";
 import "package:percent_indicator/linear_percent_indicator.dart";
+import "package:provider/provider.dart";
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,10 +31,12 @@ class _HomePageState extends State<HomePage> {
   late MangadexPersonalClient client;
   late List<SearchData> books = [];
   late List<Map<String, String>> booksMap = [];
-
   @override
   void initState() {
     super.initState();
+
+    FirebaseUpdations.listenToRecentBooks(context);
+
     client =
         MangadexPersonalClient(clientId: clientId, clientSecret: clientSecret);
     login();
@@ -81,27 +86,32 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    RecentBookModal recentBook =
+        Provider.of<RecentBookModal>(context, listen: true);
 
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.black,
       body: CustomScrollView(slivers: [
-        SliverAppBar(
-          backgroundColor: Colors.black,
-          title: const Text(
-            "NOW",
-            style:
-                TextStyle(color: Colors.white, fontFamily: "go3", fontSize: 25),
-          ),
-          actions: [
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ))
-          ],
-        ),
+        recentBook.present
+            ? SliverAppBar(
+                backgroundColor: Colors.black,
+                title: const Text(
+                  "NOW",
+                  style: TextStyle(
+                      color: Colors.white, fontFamily: "go3", fontSize: 25),
+                ),
+                actions: [
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.search,
+                          color: Colors.white,
+                        ))
+                  ])
+            : SliverToBoxAdapter(
+                child: Container(),
+              ),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
@@ -110,94 +120,97 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 200,
-                    child: Row(
-                      children: [
-                        Container(
-                          height: double.infinity,
-                          width: screenSize.width * 0.4,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              image: const DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(
-                                      "https://imgs.search.brave.com/NtEg4Kwxec3NnbcaKqP5UpxCxevRHyMymoZk3emiusQ/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9pLmV0/c3lzdGF0aWMuY29t/LzM3MjY4NzM3L3Iv/aWwvNjhlNTZmLzU3/Mzk1NjQyNzkvaWxf/NjAweDYwMC41NzM5/NTY0Mjc5XzQyYmku/anBn")),
-                              borderRadius: BorderRadius.circular(20)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 15),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  child: recentBook.present
+                      ? SizedBox(
+                          width: double.infinity,
+                          height: 200,
+                          child: Row(
                             children: [
-                              const Text(
-                                "Solo Leveling, Vol 5",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: "PoppinsRegular",
-                                    fontSize: 18),
+                              Container(
+                                height: double.infinity,
+                                width: screenSize.width * 0.4,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.rectangle,
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image:
+                                            NetworkImage(recentBook.imageUrl!)),
+                                    borderRadius: BorderRadius.circular(20)),
                               ),
-                              const Text(
-                                "Chapter 32",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: "PoppinsRegular",
-                                    fontSize: 12),
-                              ),
-                              const Text(
-                                "Hye Young im",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontFamily: "PoppinsRegular",
-                                    fontSize: 12),
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              const Row(
-                                children: [
-                                  Text(
-                                    "78%",
-                                    style: TextStyle(
-                                        color: Colors.amber,
-                                        fontFamily: "PoppinsRegular",
-                                        fontSize: 12.5),
-                                  ),
-                                  Text(
-                                    "  •  8 chapters left ",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: "PoppinsRegular",
-                                        fontSize: 12.5),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 1,
-                              ),
-                              SizedBox(
-                                width: screenSize.width * 0.49,
-                                child: LinearPercentIndicator(
-                                  padding: EdgeInsets.zero,
-                                  lineHeight: 3,
-                                  backgroundColor:
-                                      const Color.fromRGBO(64, 65, 65, 1),
-                                  progressColor: Colors.amber,
-                                  percent: 0.78,
+                              Padding(
+                                padding: const EdgeInsets.only(left: 15),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      recentBook.title!,
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: "PoppinsRegular",
+                                          fontSize: 18),
+                                    ),
+                                    Text(
+                                      "Chapter ${recentBook.selectedChapter}",
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: "PoppinsRegular",
+                                          fontSize: 12),
+                                    ),
+                                    // const Text(
+                                    //   "Hye Young im",
+                                    //   style: TextStyle(
+                                    //       color: Colors.grey,
+                                    //       fontFamily: "PoppinsRegular",
+                                    //       fontSize: 12),
+                                    // ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "${(recentBook.selectedChapter! / recentBook.totalChapters! * 100).toStringAsFixed(0)} %",
+                                          style: const TextStyle(
+                                              color: Colors.amber,
+                                              fontFamily: "PoppinsRegular",
+                                              fontSize: 12.5),
+                                        ),
+                                        Text(
+                                          "  •  ${(recentBook.totalChapters! - recentBook.selectedChapter!)} chapters left ",
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: "PoppinsRegular",
+                                              fontSize: 12.5),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 1,
+                                    ),
+                                    SizedBox(
+                                      width: screenSize.width * 0.49,
+                                      child: LinearPercentIndicator(
+                                          padding: EdgeInsets.zero,
+                                          lineHeight: 3,
+                                          backgroundColor: const Color.fromRGBO(
+                                              64, 65, 65, 1),
+                                          progressColor: Colors.amber,
+                                          percent: recentBook.selectedChapter! /
+                                              recentBook.totalChapters!),
+                                    ),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                    ButtonComponent(text: "CONTINUE READING")
+                                  ],
                                 ),
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              ButtonComponent(text: "CONTINUE READING")
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
+                        )
+                      : Container(),
                 ),
                 const SizedBox(
                   height: 10,
@@ -269,12 +282,27 @@ class _HomePageState extends State<HomePage> {
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
+                    RecentBookModal recentBookModalProvider =
+                        Provider.of<RecentBookModal>(context, listen: true);
+                    List recents = recentBookModalProvider.recents ?? [];
+                    int selectedChapter = 1;
+                    if (recents.isNotEmpty) {
+                      for (int i = 0; i < recents.length; i++) {
+                        if (recents[i]["id"] == booksMap[index]["id"]) {
+                          selectedChapter = recents[i]["currentChapter"];
+                          break;
+                        }
+                      }
+                    }
                     return GestureDetector(
                       onTap: () {
                         showCupertinoModalBottomSheet(
                             context: context,
                             builder: (context) {
-                              return MangaCoverPage2(data: booksMap[index]);
+                              return MangaCoverPage2(
+                                data: booksMap[index],
+                                selectedChapter: selectedChapter,
+                              );
                             });
                       },
                       child: AllBooksComponent(

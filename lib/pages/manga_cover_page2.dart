@@ -1,14 +1,18 @@
 // ignore_for_file: must_be_immutable
 
 import "package:flutter/material.dart";
+import "package:manga_reader_app/modals/book.dart";
 import "package:manga_reader_app/pages/manga_reading_page.dart";
+import "package:manga_reader_app/services/auth_services.dart";
 import "package:mangadex_library/mangadex_client.dart";
 import "package:mangadex_library/mangadex_library.dart";
 import "package:percent_indicator/linear_percent_indicator.dart";
 import "package:popover/popover.dart";
 
 class MangaCoverPage2 extends StatefulWidget {
-  MangaCoverPage2({super.key, required this.data});
+  MangaCoverPage2(
+      {super.key, required this.data, required this.selectedChapter});
+  int selectedChapter;
   Map<String, String> data;
 
   @override
@@ -18,7 +22,7 @@ class MangaCoverPage2 extends StatefulWidget {
 class _MangaCoverPage2State extends State<MangaCoverPage2> {
   bool showFullDescription = false;
   GlobalKey listChapterKey = GlobalKey();
-  int selectedChapter = 1;
+
   ScrollController chapterController = ScrollController();
 
   String clientId =
@@ -29,8 +33,15 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
   String password = "ItsChennai@2313";
 
   late MangadexPersonalClient client;
-
   List<InternalChapterData> chapterList = [];
+
+  AuthServices authServices = AuthServices();
+
+  void callback(int selectedChapter) {
+    setState(() {
+      widget.selectedChapter = selectedChapter;
+    });
+  }
 
   @override
   void initState() {
@@ -180,7 +191,9 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                                           fontFamily: "PoppinsRegular",
                                           color: Colors.white,
                                           fontSize: 12,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
+                                        maxLines: 4,
                                       ),
                           )
                         : GestureDetector(
@@ -227,7 +240,7 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                                   WidgetsBinding.instance
                                       .addPostFrameCallback((_) {
                                     chapterController.jumpTo(
-                                      (selectedChapter - 1) * 40.0,
+                                      (widget.selectedChapter - 1) * 40.0,
                                     );
                                   });
 
@@ -241,7 +254,8 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                                           GestureDetector(
                                             onTap: () {
                                               setState(() {
-                                                selectedChapter = index + 1;
+                                                widget.selectedChapter =
+                                                    index + 1;
                                                 Navigator.pop(context);
                                               });
                                             },
@@ -291,7 +305,7 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  "Chapter   $selectedChapter",
+                                  "Chapter   ${widget.selectedChapter}",
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontFamily: "PoppinsSemiBold",
@@ -358,14 +372,27 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                     ),
                     GestureDetector(
                       onTap: () {
+                        Book book = Book(
+                          id: widget.data["id"]!,
+                          title: widget.data["title"]!,
+                          imageUrl: widget.data["imageUrl"]!,
+                          contentRating: widget.data["contentRating"]!,
+                          publicDemographic: widget.data["publicDemographic"]!,
+                          currentChapter: widget.selectedChapter,
+                          totalChapters: chapterList.length,
+                        );
+                        authServices.updateRecents(book);
+
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => MangaReadingPage(
-                                      selectedChapter: selectedChapter,
+                                      data: widget.data,
+                                      selectedChapter: widget.selectedChapter,
                                       totalChapters: chapterList.length,
                                       chapterList: chapterList,
                                       client: client,
+                                      callback: callback,
                                     )));
                       },
                       child: Container(

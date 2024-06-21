@@ -1,24 +1,30 @@
 // ignore_for_file: must_be_immutable
 
-import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import "package:manga_reader_app/modals/book.dart";
+import "package:manga_reader_app/services/auth_services.dart";
 import "package:mangadex_library/mangadex_client.dart";
 import "package:mangadex_library/mangadex_library.dart";
 import "package:photo_view/photo_view.dart";
 import "package:popover/popover.dart";
 
 class MangaReadingPage extends StatefulWidget {
-  MangaReadingPage(
-      {super.key,
-      required this.selectedChapter,
-      required this.totalChapters,
-      required this.chapterList,
-      required this.client});
+  MangaReadingPage({
+    super.key,
+    required this.data,
+    required this.selectedChapter,
+    required this.totalChapters,
+    required this.chapterList,
+    required this.client,
+    required this.callback,
+  });
   int selectedChapter;
   int totalChapters;
   List<InternalChapterData> chapterList;
   MangadexPersonalClient client;
+  Map data;
+  Function(int) callback;
 
   @override
   State<MangaReadingPage> createState() => _MangaReadingPageState();
@@ -97,6 +103,24 @@ class _MangaReadingPageState extends State<MangaReadingPage> {
                                   onTap: () {
                                     setState(() {
                                       widget.selectedChapter = index + 1;
+                                      Book book = Book(
+                                        id: widget.data["id"],
+                                        title: widget.data["title"],
+                                        contentRating:
+                                            widget.data["contentRating"],
+                                        publicDemographic:
+                                            widget.data["publicDemographic"],
+                                        imageUrl: widget.data["imageUrl"],
+                                        currentChapter: widget.selectedChapter,
+                                        totalChapters: widget.totalChapters,
+                                      );
+
+                                      AuthServices authServices =
+                                          AuthServices();
+
+                                      widget.callback(widget.selectedChapter);
+                                      authServices.updateRecents(book);
+
                                       Navigator.pop(context);
                                       getPageImageLinks();
                                     });
