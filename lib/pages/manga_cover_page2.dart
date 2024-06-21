@@ -336,37 +336,43 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                     const SizedBox(
                       height: 25,
                     ),
-                    const Row(
-                      children: [
-                        Text(
-                          "78%",
-                          style: TextStyle(
-                              color: Colors.amber,
-                              fontFamily: "PoppinsRegular",
-                              fontSize: 12.5),
-                        ),
-                        Text(
-                          "  •  8 chapters left ",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "PoppinsRegular",
-                              fontSize: 12.5),
-                        ),
-                      ],
-                    ),
+                    chapterList.isNotEmpty
+                        ? Row(
+                            children: [
+                              Text(
+                                "${((widget.selectedChapter - 1) / chapterList.length * 100).toStringAsFixed(0)} %",
+                                style: const TextStyle(
+                                    color: Colors.amber,
+                                    fontFamily: "PoppinsRegular",
+                                    fontSize: 12.5),
+                              ),
+                              Text(
+                                "  •  ${chapterList.length - widget.selectedChapter} chapters left ",
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "PoppinsRegular",
+                                    fontSize: 12.5),
+                              ),
+                            ],
+                          )
+                        : Container(),
                     const SizedBox(
                       height: 10,
                     ),
-                    SizedBox(
-                      width: screenSize.width * 1,
-                      child: LinearPercentIndicator(
-                        padding: EdgeInsets.zero,
-                        lineHeight: 3,
-                        backgroundColor: const Color.fromRGBO(64, 65, 65, 1),
-                        progressColor: Colors.amber,
-                        percent: 0.78,
-                      ),
-                    ),
+                    chapterList.isNotEmpty
+                        ? SizedBox(
+                            width: screenSize.width * 1,
+                            child: LinearPercentIndicator(
+                              padding: EdgeInsets.zero,
+                              lineHeight: 3,
+                              backgroundColor:
+                                  const Color.fromRGBO(64, 65, 65, 1),
+                              progressColor: Colors.amber,
+                              percent: (widget.selectedChapter - 1) /
+                                  chapterList.length,
+                            ),
+                          )
+                        : Container(),
                     const SizedBox(
                       height: 30,
                     ),
