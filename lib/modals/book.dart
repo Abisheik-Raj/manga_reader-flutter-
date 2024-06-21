@@ -2,6 +2,7 @@ class Book {
   Book({
     required this.id,
     required this.title,
+    required this.description,
     required this.contentRating,
     required this.publicDemographic,
     required this.imageUrl,
@@ -11,6 +12,7 @@ class Book {
 
   String id;
   String title;
+  String description;
   String contentRating;
   String publicDemographic;
   String imageUrl;
@@ -21,6 +23,7 @@ class Book {
     return {
       "id": id,
       "title": title,
+      "description": description,
       "contentRating": contentRating,
       "publicDemographic": publicDemographic,
       "imageUrl": imageUrl,

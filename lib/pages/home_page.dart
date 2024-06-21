@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
 import "package:manga_reader_app/components/all_books_component.dart";
 import "package:manga_reader_app/components/button_component.dart";
 import "package:manga_reader_app/components/for_you_component.dart";
@@ -123,11 +124,10 @@ class _HomePageState extends State<HomePage> {
                   child: recentBook.present
                       ? SizedBox(
                           width: double.infinity,
-                          height: 200,
+                          height: screenSize.height * 0.22,
                           child: Row(
                             children: [
                               Container(
-                                height: double.infinity,
                                 width: screenSize.width * 0.4,
                                 decoration: BoxDecoration(
                                     shape: BoxShape.rectangle,
@@ -137,76 +137,86 @@ class _HomePageState extends State<HomePage> {
                                             NetworkImage(recentBook.imageUrl!)),
                                     borderRadius: BorderRadius.circular(20)),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      recentBook.title!,
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: "PoppinsRegular",
-                                          fontSize: 18),
-                                    ),
-                                    Text(
-                                      "Chapter ${recentBook.selectedChapter}",
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: "PoppinsRegular",
-                                          fontSize: 12),
-                                    ),
-                                    // const Text(
-                                    //   "Hye Young im",
-                                    //   style: TextStyle(
-                                    //       color: Colors.grey,
-                                    //       fontFamily: "PoppinsRegular",
-                                    //       fontSize: 12),
-                                    // ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "${(recentBook.selectedChapter! / recentBook.totalChapters! * 100).toStringAsFixed(0)} %",
-                                          style: const TextStyle(
-                                              color: Colors.amber,
-                                              fontFamily: "PoppinsRegular",
-                                              fontSize: 12.5),
-                                        ),
-                                        Text(
-                                          "  •  ${(recentBook.totalChapters! - recentBook.selectedChapter!)} chapters left ",
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: "PoppinsRegular",
-                                              fontSize: 12.5),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 1,
-                                    ),
-                                    SizedBox(
-                                      width: screenSize.width * 0.49,
-                                      child: LinearPercentIndicator(
-                                          padding: EdgeInsets.zero,
-                                          lineHeight: 3,
-                                          backgroundColor: const Color.fromRGBO(
-                                              64, 65, 65, 1),
-                                          progressColor: Colors.amber,
-                                          percent: recentBook.selectedChapter! /
-                                              recentBook.totalChapters!),
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    ButtonComponent(text: "CONTINUE READING")
-                                  ],
-                                ),
+                              const SizedBox(
+                                width: 15,
                               ),
+                              Expanded(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    recentBook.title!,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: "PoppinsRegular",
+                                      fontSize: 18,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    maxLines: 1,
+                                  ),
+                                  Text(
+                                    "Chapter ${recentBook.selectedChapter}",
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: "PoppinsRegular",
+                                        fontSize: 12),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "${(recentBook.selectedChapter! / recentBook.totalChapters! * 100).toStringAsFixed(0)} %",
+                                        style: const TextStyle(
+                                            color: Colors.amber,
+                                            fontFamily: "PoppinsRegular",
+                                            fontSize: 12.5),
+                                      ),
+                                      Text(
+                                        "  •  ${(recentBook.totalChapters! - recentBook.selectedChapter!)} chapters left ",
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "PoppinsRegular",
+                                            fontSize: 12.5),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 1,
+                                  ),
+                                  SizedBox(
+                                    width: screenSize.width * 0.49,
+                                    child: LinearPercentIndicator(
+                                        padding: EdgeInsets.zero,
+                                        lineHeight: 3,
+                                        backgroundColor:
+                                            const Color.fromRGBO(64, 65, 65, 1),
+                                        progressColor: Colors.amber,
+                                        percent: recentBook.selectedChapter! /
+                                            recentBook.totalChapters!),
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  GestureDetector(
+                                      onTap: () {
+                                        showCupertinoModalBottomSheet(
+                                            context: context,
+                                            builder: (context) {
+                                              return MangaCoverPage2(
+                                                data: recentBook.bookMap!,
+                                                selectedChapter:
+                                                    recentBook.selectedChapter!,
+                                              );
+                                            });
+                                      },
+                                      child: ButtonComponent(
+                                          text: "CONTINUE READING"))
+                                ],
+                              )),
                             ],
                           ),
                         )

@@ -375,6 +375,7 @@ class _MangaCoverPage2State extends State<MangaCoverPage2> {
                         Book book = Book(
                           id: widget.data["id"]!,
                           title: widget.data["title"]!,
+                          description: widget.data["description"]!,
                           imageUrl: widget.data["imageUrl"]!,
                           contentRating: widget.data["contentRating"]!,
                           publicDemographic: widget.data["publicDemographic"]!,

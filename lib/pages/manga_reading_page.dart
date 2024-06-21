@@ -106,6 +106,7 @@ class _MangaReadingPageState extends State<MangaReadingPage> {
                                       Book book = Book(
                                         id: widget.data["id"],
                                         title: widget.data["title"],
+                                        description: widget.data["description"],
                                         contentRating:
                                             widget.data["contentRating"],
                                         publicDemographic:

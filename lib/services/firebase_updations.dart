@@ -20,7 +20,9 @@ class FirebaseUpdations {
           recentBookModalProvider.updateRecents(recents);
           Map<dynamic, dynamic> recentBook = recents[recents.length - 1];
           recentBookModalProvider.updateRecentBook(
+            recentBook["id"],
             recentBook["title"],
+            recentBook["description"],
             recentBook["imageUrl"],
             recentBook["currentChapter"],
             recentBook["totalChapters"],
@@ -28,6 +30,8 @@ class FirebaseUpdations {
           );
         } else {
           recentBookModalProvider.updateRecentBook(
+            "",
+            "",
             "",
             "",
             0,
