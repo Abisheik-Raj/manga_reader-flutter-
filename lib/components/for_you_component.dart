@@ -13,38 +13,42 @@ class ForYouComponent extends StatelessWidget {
       child: SizedBox(
         height: screenSize.height * 0.28,
         width: screenSize.width * 0.75,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 180,
-              width: screenSize.width * 0.75,
-              decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: NetworkImage(data["imageUrl"]!),
-                    fit: BoxFit.cover,
-                  )),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              data["title"]!,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontFamily: "PoppinsRegular",
-                  fontSize: 15),
-            ),
-            Text(
-              "Chapter ${data["currentChapter"]}",
-              style: const TextStyle(
-                  color: Colors.grey,
-                  fontFamily: "PoppinsRegular",
-                  fontSize: 12),
-            ),
-          ],
+        child: Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 180,
+                width: screenSize.width * 0.75,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: NetworkImage(data["imageUrl"]!),
+                      fit: BoxFit.cover,
+                    )),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                data["title"]!,
+                maxLines: 1,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: "PoppinsRegular",
+                    fontSize: 15,
+                    overflow: TextOverflow.ellipsis),
+              ),
+              Text(
+                "Chapter ${data["currentChapter"]}",
+                style: const TextStyle(
+                    color: Colors.grey,
+                    fontFamily: "PoppinsRegular",
+                    fontSize: 12),
+              ),
+            ],
+          ),
         ),
       ),
     );
