@@ -15,7 +15,7 @@ class FirebaseUpdations {
         .snapshots()
         .listen((snapshot) {
       if (snapshot.exists) {
-        List<dynamic> recents = snapshot.get("recents");
+        List recents = snapshot.get("recents");
         if (recents.isNotEmpty) {
           recentBookModalProvider.updateRecents(recents);
           Map<dynamic, dynamic> recentBook = recents[recents.length - 1];

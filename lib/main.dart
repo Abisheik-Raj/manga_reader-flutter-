@@ -1,6 +1,5 @@
 import "package:firebase_core/firebase_core.dart";
 import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
 import "package:manga_reader_app/firebase_options.dart";
 import "package:manga_reader_app/modals/recent_book_modal.dart";
 import "package:manga_reader_app/pages/home_page.dart";

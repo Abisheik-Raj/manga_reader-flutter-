@@ -41,6 +41,7 @@ class RecentBookModal extends ChangeNotifier {
       "title": _title!,
       "contentRating": "",
       "publicDemographic": "",
+      "selectedChapter": _selectedChapter.toString(),
       "description": _description!,
       "imageUrl": _imageUrl!,
     };

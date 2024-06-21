@@ -225,33 +225,56 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "FOR YOU",
-                      style: TextStyle(
-                          color: Colors.white, fontFamily: "go3", fontSize: 25),
-                    ),
-                    Icon(
-                      Icons.arrow_right_alt,
-                      color: Colors.white,
-                      size: 28,
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      ForYouComponent(),
-                      ForYouComponent(),
-                    ],
-                  ),
-                ),
+                recentBook.present
+                    ? const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "FOR YOU",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "go3",
+                                fontSize: 25),
+                          ),
+                          Icon(
+                            Icons.arrow_right_alt,
+                            color: Colors.white,
+                            size: 28,
+                          )
+                        ],
+                      )
+                    : Container(),
+                recentBook.present
+                    ? const SizedBox(
+                        height: 15,
+                      )
+                    : Container(),
+                recentBook.present
+                    ? SizedBox(
+                        height: screenSize.height * 0.28,
+                        child: ListView.builder(
+                            itemCount: recentBook.recents!.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: ((context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  showCupertinoModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return MangaCoverPage2(
+                                          data: recentBook.recents![index],
+                                          selectedChapter:
+                                              recentBook.recents![index]
+                                                  ["currentChapter"],
+                                        );
+                                      });
+                                },
+                                child: ForYouComponent(
+                                    data: recentBook.recents![index]),
+                              );
+                            })),
+                      )
+                    : Container(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

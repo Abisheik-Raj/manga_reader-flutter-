@@ -13,7 +13,7 @@ class MangaCoverPage2 extends StatefulWidget {
   MangaCoverPage2(
       {super.key, required this.data, required this.selectedChapter});
   int selectedChapter;
-  Map<String, String> data;
+  Map data;
 
   @override
   State<MangaCoverPage2> createState() => _MangaCoverPage2State();

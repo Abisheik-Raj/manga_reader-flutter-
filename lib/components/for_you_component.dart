@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
 
 class ForYouComponent extends StatelessWidget {
-  const ForYouComponent({super.key});
+  const ForYouComponent({super.key, required this.data});
+  final Map data;
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +11,7 @@ class ForYouComponent extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: SizedBox(
-        height: 250,
+        height: screenSize.height * 0.28,
         width: screenSize.width * 0.75,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -21,25 +22,24 @@ class ForYouComponent extends StatelessWidget {
               decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(10),
-                  image: const DecorationImage(
-                    image: NetworkImage(
-                        "https://imgs.search.brave.com/HYLDE7nxxaKdA5BiBz7IXV_sGnHKydfmeJbiFCa-h18/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMxLmNicmltYWdl/cy5jb20vd29yZHBy/ZXNzL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDI0LzAzLzEwLWJl/c3QtZmlnaHRlcnMt/aW4tYmxlYWNoLXJh/bmtlZC5qcGc"),
+                  image: DecorationImage(
+                    image: NetworkImage(data["imageUrl"]!),
                     fit: BoxFit.cover,
                   )),
             ),
             const SizedBox(
               height: 10,
             ),
-            const Text(
-              "Bleach, Vol 5",
-              style: TextStyle(
+            Text(
+              data["title"]!,
+              style: const TextStyle(
                   color: Colors.white,
                   fontFamily: "PoppinsRegular",
                   fontSize: 15),
             ),
-            const Text(
-              "Chapter 32",
-              style: TextStyle(
+            Text(
+              "Chapter ${data["currentChapter"]}",
+              style: const TextStyle(
                   color: Colors.grey,
                   fontFamily: "PoppinsRegular",
                   fontSize: 12),
