@@ -117,48 +117,51 @@ class _MangaCoverPageState extends State<MangaCoverPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              height: screenSize.height * 0.35,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  opacity: 0.1,
-                  fit: BoxFit.cover,
-                  image: NetworkImage(widget.data["imageUrl"].toString()),
+            Hero(
+              tag: widget.data["imageUrl"],
+              child: Container(
+                width: double.infinity,
+                height: screenSize.height * 0.35,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    opacity: 0.1,
+                    fit: BoxFit.cover,
+                    image: NetworkImage(widget.data["imageUrl"].toString()),
+                  ),
                 ),
-              ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    right: screenSize.height * 0.02,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Colors.black.withOpacity(0.1),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            "×",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      right: screenSize.height * 0.02,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.black.withOpacity(0.1),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "×",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  Center(
-                    child: Image(
-                      image: NetworkImage(widget.data["imageUrl"].toString()),
+                    Center(
+                      child: Image(
+                        image: NetworkImage(widget.data["imageUrl"].toString()),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             Padding(

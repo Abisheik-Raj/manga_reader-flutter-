@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
 import "package:manga_reader_app/components/all_books_component.dart";
 import "package:manga_reader_app/components/button_component.dart";
 import "package:manga_reader_app/components/for_you_component.dart";
@@ -6,6 +7,7 @@ import "package:manga_reader_app/components/shimmer_box_2.dart";
 import "package:manga_reader_app/modals/recent_book_modal.dart";
 import "package:manga_reader_app/pages/all_books_page.dart";
 import "package:manga_reader_app/pages/manga_cover_page.dart";
+import "package:manga_reader_app/pages/profile_page.dart";
 import "package:manga_reader_app/services/firebase_updations.dart";
 import "package:mangadex_library/mangadex_client.dart";
 import "package:mangadex_library/mangadex_library.dart";
@@ -97,18 +99,46 @@ class _HomePageState extends State<HomePage> {
         recentBook.present
             ? SliverAppBar(
                 backgroundColor: Colors.black,
-                title: const Text(
-                  "NOW",
-                  style: TextStyle(
-                      color: Colors.white, fontFamily: "go3", fontSize: 25),
+                title: const Hero(
+                  tag: "edit",
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Text(
+                      "NOW",
+                      style: TextStyle(
+                          color: Colors.white, fontFamily: "go3", fontSize: 25),
+                    ),
+                  ),
                 ),
                 actions: [
-                    IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.search,
-                          color: Colors.white,
-                        ))
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          // PageRouteBuilder(
+                          //   pageBuilder:
+                          //       (context, animation, secondaryAnimation) =>
+                          //           const ProfilePage(),
+                          // ),
+
+                          CupertinoPageRoute(
+                              builder: (context) => const ProfilePage()),
+                        );
+                      },
+                      child: const Hero(
+                        tag: "hero",
+                        child: Material(
+                          color: Colors.transparent,
+                          child: CircleAvatar(
+                            foregroundImage: NetworkImage(
+                                "https://imgs.search.brave.com/Dnaytwz75nADA9rj9UB-7z4lnMnDtKmzfTa4U8Evk24/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMubmV3czlsaXZl/LmNvbS93cC1jb250/ZW50L3VwbG9hZHMv/MjAyMy8xMC8yZjYz/MTQ3YTBjMDM2Y2Rm/M2I3NTIzNDI4ZDQx/Y2EzOS5qcGc"),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
                   ])
             : SliverToBoxAdapter(
                 child: Container(),
@@ -331,15 +361,26 @@ class _HomePageState extends State<HomePage> {
                     }
                     return GestureDetector(
                       onTap: () {
-                        showCupertinoModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return MangaCoverPage(
-                                data: booksMap[index],
-                                selectedChapter: selectedChapter,
-                                recents: recentBook.recents,
-                              );
-                            });
+                        // showCupertinoModalBottomSheet(
+                        //     context: context,
+                        //     builder: (context) {
+                        //       return MangaCoverPage(
+                        //         data: booksMap[index],
+                        //         selectedChapter: selectedChapter,
+                        //         recents: recentBook.recents,
+                        //       );
+                        //     });
+
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => MangaCoverPage(
+                              data: booksMap[index],
+                              selectedChapter: selectedChapter,
+                              recents: recentBook.recents,
+                            ),
+                          ),
+                        );
                       },
                       child: AllBooksComponent(
                         imageUrl: booksMap[index]["imageUrl"]!,
