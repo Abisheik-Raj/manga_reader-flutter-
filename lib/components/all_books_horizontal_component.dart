@@ -36,20 +36,23 @@ class _AllBooksHorizontalComponentState
         height: screenSize.height * 0.22,
         child: Row(
           children: [
-            Container(
-              width: screenSize.width * 0.32,
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(widget.imageUrl),
-                    onError: (exception, stackTrace) {
-                      setState(() {
-                        widget.imageUrl =
-                            'https://imgs.search.brave.com/fXArEBHCg1XnRCIrQhgRljgvjO2sGwDAgvd7EkavsrM/rs:fit:500:0:0/g:ce/aHR0cHM6Ly93d3cu/cHVibGljZG9tYWlu/cGljdHVyZXMubmV0/L3BpY3R1cmVzLzI4/MDAwMC92ZWxrYS9u/b3QtZm91bmQtaW1h/Z2UtMTUzODM4NjQ3/ODdsdS5qcGc'; // Use a local placeholder image
-                      });
-                    }),
-                borderRadius: BorderRadius.circular(20),
+            Hero(
+              tag: widget.imageUrl,
+              child: Container(
+                width: screenSize.width * 0.32,
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(widget.imageUrl),
+                      onError: (exception, stackTrace) {
+                        setState(() {
+                          widget.imageUrl =
+                              'https://imgs.search.brave.com/fXArEBHCg1XnRCIrQhgRljgvjO2sGwDAgvd7EkavsrM/rs:fit:500:0:0/g:ce/aHR0cHM6Ly93d3cu/cHVibGljZG9tYWlu/cGljdHVyZXMubmV0/L3BpY3R1cmVzLzI4/MDAwMC92ZWxrYS9u/b3QtZm91bmQtaW1h/Z2UtMTUzODM4NjQ3/ODdsdS5qcGc'; // Use a local placeholder image
+                        });
+                      }),
+                  borderRadius: BorderRadius.circular(20),
+                ),
               ),
             ),
             const SizedBox(
