@@ -1,18 +1,18 @@
 import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
 import "package:manga_reader_app/components/all_books_component.dart";
 import "package:manga_reader_app/components/button_component.dart";
 import "package:manga_reader_app/components/for_you_component.dart";
 import "package:manga_reader_app/components/shimmer_box_2.dart";
 import "package:manga_reader_app/modals/recent_book_modal.dart";
 import "package:manga_reader_app/pages/all_books_page.dart";
-import "package:manga_reader_app/pages/manga_cover_page2.dart";
+import "package:manga_reader_app/pages/manga_cover_page.dart";
 import "package:manga_reader_app/services/firebase_updations.dart";
 import "package:mangadex_library/mangadex_client.dart";
 import "package:mangadex_library/mangadex_library.dart";
 import "package:modal_bottom_sheet/modal_bottom_sheet.dart";
 import "package:percent_indicator/linear_percent_indicator.dart";
 import "package:provider/provider.dart";
+import "package:flutter/cupertino.dart";
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -206,10 +206,11 @@ class _HomePageState extends State<HomePage> {
                                         showCupertinoModalBottomSheet(
                                             context: context,
                                             builder: (context) {
-                                              return MangaCoverPage2(
+                                              return MangaCoverPage(
                                                 data: recentBook.bookMap!,
                                                 selectedChapter:
                                                     recentBook.selectedChapter!,
+                                                recents: recentBook.recents,
                                               );
                                             });
                                       },
@@ -253,7 +254,7 @@ class _HomePageState extends State<HomePage> {
                     ? SizedBox(
                         height: screenSize.height * 0.28,
                         child: ListView.builder(
-                            itemCount: recentBook.recents!.length,
+                            itemCount: recentBook.recents!.length - 1,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: ((context, index) {
                               return GestureDetector(
@@ -261,11 +262,12 @@ class _HomePageState extends State<HomePage> {
                                   showCupertinoModalBottomSheet(
                                       context: context,
                                       builder: (context) {
-                                        return MangaCoverPage2(
+                                        return MangaCoverPage(
                                           data: recentBook.recents![index],
                                           selectedChapter:
                                               recentBook.recents![index]
                                                   ["currentChapter"],
+                                          recents: recentBook.recents,
                                         );
                                       });
                                 },
@@ -287,7 +289,7 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            CupertinoPageRoute(
                                 builder: (context) => const AllBooksPage()));
                       },
                       child: const Icon(
@@ -332,9 +334,10 @@ class _HomePageState extends State<HomePage> {
                         showCupertinoModalBottomSheet(
                             context: context,
                             builder: (context) {
-                              return MangaCoverPage2(
+                              return MangaCoverPage(
                                 data: booksMap[index],
                                 selectedChapter: selectedChapter,
+                                recents: recentBook.recents,
                               );
                             });
                       },

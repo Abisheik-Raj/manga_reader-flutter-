@@ -6,7 +6,7 @@ import "package:manga_reader_app/components/all_books_horizontal_component.dart"
 import "package:manga_reader_app/components/genre_clip_component.dart";
 import "package:manga_reader_app/components/shimmer_box.dart";
 import "package:manga_reader_app/modals/recent_book_modal.dart";
-import "package:manga_reader_app/pages/manga_cover_page2.dart";
+import "package:manga_reader_app/pages/manga_cover_page.dart";
 import "package:mangadex_library/mangadex_client.dart";
 import "package:mangadex_library/mangadex_library.dart";
 import "package:modal_bottom_sheet/modal_bottom_sheet.dart";
@@ -54,7 +54,16 @@ class _AllBooksPageState extends State<AllBooksPage> {
     getBooksByRating();
   }
 
+  @override
+  void dispose() {
+    searchController.dispose();
+    scrollController.dispose();
+    super.dispose();
+  }
+
   void getBooksByName(String name) async {
+    if (!mounted) return;
+
     setState(() {
       isLoading = true;
     });
@@ -78,12 +87,16 @@ class _AllBooksPageState extends State<AllBooksPage> {
 
     scrollToTop();
 
+    if (!mounted) return;
+
     setState(() {
       isLoading = false;
     });
   }
 
   void getBooksByRating() async {
+    if (!mounted) return;
+
     setState(() {
       isLoading = true;
     });
@@ -121,6 +134,7 @@ class _AllBooksPageState extends State<AllBooksPage> {
 
     scrollToTop();
 
+    if (!mounted) return;
     setState(() {
       isLoading = false;
     });
@@ -142,16 +156,20 @@ class _AllBooksPageState extends State<AllBooksPage> {
   }
 
   void scrollToTop() {
-    scrollController.animateTo(
-      0.0,
-      duration: const Duration(milliseconds: 800),
-      curve: Curves.linear,
-    );
+    if (mounted) {
+      scrollController.animateTo(
+        0.0,
+        duration: const Duration(milliseconds: 800),
+        curve: Curves.linear,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    RecentBookModal recentBook =
+        Provider.of<RecentBookModal>(context, listen: true);
 
     return SafeArea(
       child: Scaffold(
@@ -320,9 +338,11 @@ class _AllBooksPageState extends State<AllBooksPage> {
                                 showCupertinoModalBottomSheet(
                                     context: context,
                                     builder: (context) {
-                                      return MangaCoverPage2(
-                                          data: booksMap[index],
-                                          selectedChapter: selectedChapter);
+                                      return MangaCoverPage(
+                                        data: booksMap[index],
+                                        selectedChapter: selectedChapter,
+                                        recents: recentBook.recents,
+                                      );
                                     });
                               },
                               child: AllBooksHorizontalComponent(
